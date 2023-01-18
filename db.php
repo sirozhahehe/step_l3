@@ -20,6 +20,7 @@ function register(string $username, string $password): void
         getConnection(),
         "INSERT INTO users (username, password) VALUES (?, ?);",
     );
+    $password = crypt($password, 'randomSalt');
     mysqli_stmt_bind_param($statement, 'ss', $username, $password);
     mysqli_stmt_execute($statement);
 }
