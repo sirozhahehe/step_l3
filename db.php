@@ -14,7 +14,7 @@ function getConnection(): bool|mysqli|null
     return $_connection;
 }
 
-function register(string $username, string $password): void
+function register(strßing $username, string $password): void
 {
     $statement = mysqli_prepare(
         getConnection(),
@@ -35,4 +35,26 @@ function findUser(string $username, bool $isFull = false): bool|array|null
     mysqli_stmt_bind_param($statement, 's', $username);
     mysqli_stmt_execute($statement);
     return mysqli_fetch_assoc(mysqli_stmt_get_result($statement));
+}
+
+
+function updateUser(array $user, int $id)
+{
+    $query = "UPDATE users SET ";
+
+    $lastKey = array_key_last($user);
+    foreach ($user as $column => $value) {
+        $query .= "$column = '$value'";
+        if ($lastKey != $column) {
+            $query .= ', ';
+        }
+    }
+    $query .= " WHERE id = $id;";
+
+    $statement = mysqli_prepare(
+        getConnection(),
+        $query,
+    );
+    
+    mysqli_stmt_execute($statement);
 }

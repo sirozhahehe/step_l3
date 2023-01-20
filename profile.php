@@ -13,14 +13,33 @@
     }
 
 if (isset($_POST['user'])) {
+    if (isset($_FILES['user'])) {
+        $filename = updateFile($_FILES['user']);
+        $_POST['user']['image'] = $filename;
+    }
     editUser($user, $_POST['user']);
+    header('Location: profile.php');
 }
 
-function editUser($user, $formUser)
+function updateFile(array $file): string
 {
-
+    $filename = date('Y-m-d_H-i-s') . '.' . pathinfo($file['name']['image'], PATHINFO_EXTENSION);
+    rename($file['tmp_name']['image'], 'C:\\xampp\\htdocs\\img\\' . $filename);
+    return $filename;
 }
 
+function editUser(array $user, array $formUser): void
+{
+    $id = $user['id'];
+    $user = array_diff($formUser, $user);
+    if (isset($user['password'])) {
+        $user['password'] = crypt($user['password'], 'randomSalt');
+    }
+    if (!$user) {
+        return;
+    }
+    updateUser($user, $id);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,8 +56,9 @@ function editUser($user, $formUser)
 	    <div class="error">
 		    <span><?php echo findAndDelete('error'); ?></span>
         </div>
+        <img src="img/<?= $user['image'];?>" style="width: 200px; height: 100px;">
     
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
             <input class="form-control" name="user[username]" type="text" placeholder="Username" value="<?= $user['username'];?>">
             <input class="form-control" name="user[password]" type="text" placeholder="Password">
             <input class="form-control" name="user[email]" type="text" placeholder="Email" value="<?= $user['email'];?>">
