@@ -25,3 +25,11 @@ function findAndDelete(string $key): mixed
     unset($_SESSION[$key]);
     return $result;
 }
+function findInSession(string $key): mixed
+{
+    if (!isset($_SESSION[$key])) {
+        return null;
+    }
+    
+    return $_SESSION[$key];
+}

@@ -11,15 +11,29 @@
 </head>
 <body>
 <div class="container">
-    <div class="error">
-        <span><?php echo findAndDelete('error'); ?></span>
+    <div class="row">
+    <div class="col">
+
+	    <div class="error">
+		    <span><?php echo findAndDelete('error'); ?></span>
+        </div>
+    
+        <form method="POST">
+            <input class="form-control" name="username" type="text" placeholder="Username">
+            <input class="form-control" name="password" type="password" placeholder="Password">
+            <input class="btn btn-primary" formaction="register.php" type="submit" value="Register">
+            <?php if (!findInSession('user')) { ?>
+                <input class="btn btn-info" formaction="login.php" type="submit" value="Login">
+            <?php }?>
+        </form>
     </div>
-    <form method="POST">
-        <input class="form-control" name="username" type="text" placeholder="Username">
-        <input class="form-control" name="password" type="password" placeholder="Password">
-        <input class="btn btn-primary" formaction="register.php" type="submit" value="Register">
-        <input class="btn btn-info" formaction="login.php" type="submit" value="Login">
-    </form>
+    <div class="col">
+        <?php if (isset(findInSession('user')['username'])) { ?>
+            <span><?= 'Username: '. findInSession('user')['username']; ?></span>
+            <a href="logout.php" class="btn btn-danger">Logout</a>
+        <?php }?>
+    </div>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 </body>

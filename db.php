@@ -25,11 +25,12 @@ function register(string $username, string $password): void
     mysqli_stmt_execute($statement);
 }
 
-function findUser(string $username): bool|array|null
+function findUser(string $username, bool $isFull = false): bool|array|null
 {
+    $columns = $isFull ? '*' : 'id, username, password';
     $statement = mysqli_prepare(
         getConnection(),
-        "SELECT username, password FROM users WHERE username = ?",
+        "SELECT $columns FROM users WHERE username = ?",
     );
     mysqli_stmt_bind_param($statement, 's', $username);
     mysqli_stmt_execute($statement);
