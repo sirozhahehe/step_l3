@@ -14,7 +14,7 @@ function getConnection(): bool|mysqli|null
     return $_connection;
 }
 
-function register(strßing $username, string $password): void
+function register(string $username, string $password): void
 {
     $statement = mysqli_prepare(
         getConnection(),
@@ -57,4 +57,10 @@ function updateUser(array $user, int $id)
     );
     
     mysqli_stmt_execute($statement);
+}
+
+function findUsers(): array
+{
+    $result = mysqli_query(getConnection(), 'SELECT * FROM users');
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }

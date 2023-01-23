@@ -33,3 +33,13 @@ function findInSession(string $key): mixed
     
     return $_SESSION[$key];
 }
+
+function export(string $filename, array $data, string $format = 'csv'): void
+{
+    $file = fopen('img/' . $filename, 'a+');
+    fwrite($file, '"' . implode('","', array_keys(current($data))) . '",' . PHP_EOL);
+    foreach ($data as $row) {
+        fwrite($file, '"' . implode('","', $row) . '",'  . PHP_EOL);       
+    }
+    fclose($file);
+}
