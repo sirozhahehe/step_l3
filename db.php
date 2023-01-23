@@ -64,3 +64,19 @@ function findUsers(): array
     $result = mysqli_query(getConnection(), 'SELECT * FROM users');
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
+
+function batchUsersInsert(array $users): void
+{
+    $query = "INSERT INTO users (";
+    $userKeys = current($users);
+    unset($userKeys['id']);
+    $query .= implode(', ', array_keys($userKeys));
+    $query .= ') VALUES ';
+    while ($users) {
+        $user = array_shift($users);
+        unset($user['id']);
+        $query .= "('" . implode("', '", $user) . "'),";
+    }
+    $query = trim($query, ', ');
+    mysqli_query(getConnection(), $query);
+}

@@ -36,10 +36,22 @@ function findInSession(string $key): mixed
 
 function export(string $filename, array $data, string $format = 'csv'): void
 {
-    $file = fopen('img/' . $filename, 'a+');
-    fwrite($file, '"' . implode('","', array_keys(current($data))) . '",' . PHP_EOL);
-    foreach ($data as $row) {
-        fwrite($file, '"' . implode('","', $row) . '",'  . PHP_EOL);       
+    $file = fopen("img/$filename.$format", 'w+');
+
+    if ($format === 'csv') {
+        fwrite($file, '"' . implode('","', array_keys(current($data))) . '",' . PHP_EOL);
+        foreach ($data as $row) {
+            fwrite($file, '"' . implode('","', $row) . '",'  . PHP_EOL);       
+        }
+    } else {
+        fwrite($file, json_encode($data));
     }
+
     fclose($file);
+}
+
+function importJson(string $filename): void
+{
+    $content = json_decode(file_get_contents($filename), true);
+    batchUsersInsert($content);
 }
