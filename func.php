@@ -1,4 +1,6 @@
 <?php
+
+define("IMG_PATH", 'img/');
      function getMax($a, $b) {
 
         return max($a, $b);
@@ -36,7 +38,7 @@ function findInSession(string $key): mixed
 
 function export(string $filename, array $data, string $format = 'csv'): void
 {
-    $file = fopen("img/$filename.$format", 'w+');
+    $file = fopen(IMG_PATH . "$filename.$format", 'w+');
 
     if ($format === 'csv') {
         fwrite($file, '"' . implode('","', array_keys(current($data))) . '",' . PHP_EOL);
@@ -54,4 +56,5 @@ function importJson(string $filename): void
 {
     $content = json_decode(file_get_contents($filename), true);
     batchUsersInsert($content);
+
 }

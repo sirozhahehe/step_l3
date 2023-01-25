@@ -38,25 +38,20 @@ function findUser(string $username, bool $isFull = false): bool|array|null
 }
 
 
-function updateUser(array $user, int $id)
+function updateUser(User $user)
 {
     $query = "UPDATE users SET ";
 
-    $lastKey = array_key_last($user);
     foreach ($user as $column => $value) {
-        $query .= "$column = '$value'";
-        if ($lastKey != $column) {
-            $query .= ', ';
+        if ($column === 'id') {
+            continue;
         }
+        $query .= "$column = '$value', ";
     }
-    $query .= " WHERE id = $id;";
+    $query = trim($query, ', ');
+    $query .= " WHERE id = $user->id;";
 
-    $statement = mysqli_prepare(
-        getConnection(),
-        $query,
-    );
-    
-    mysqli_stmt_execute($statement);
+    mysqli_query(getConnection(), $query);
 }
 
 function findUsers(): array
@@ -65,7 +60,7 @@ function findUsers(): array
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-function batchUsersInsert(array $users): void
+function batchUsersInsert(array $users)
 {
     $query = "INSERT INTO users (";
     $userKeys = current($users);
